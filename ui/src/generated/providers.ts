@@ -8,7 +8,8 @@ export const CORE_PROVIDER_IDS = [
   "agy",
   "gemini-api",
   "atlascloud",
-  "minimax"
+  "minimax",
+  "novelai"
 ] as const;
 export type CoreProviderId = typeof CORE_PROVIDER_IDS[number];
 export const CORE_PROVIDER_ID_SET: ReadonlySet<string> = new Set(CORE_PROVIDER_IDS);
@@ -91,6 +92,12 @@ export const PROVIDER_MODELS = {
       "image-01-live"
     ],
     "video": []
+  },
+  "novelai": {
+    "image": [
+      "nai-diffusion-4-5-full"
+    ],
+    "video": []
   }
 } as const;
 export const IMAGE_MODEL_IDS = [
@@ -108,7 +115,8 @@ export const IMAGE_MODEL_IDS = [
   "openai/gpt-image-2/text-to-image",
   "openai/gpt-image-2/edit",
   "image-01",
-  "image-01-live"
+  "image-01-live",
+  "nai-diffusion-4-5-full"
 ] as const;
 export type ImageModelId = typeof IMAGE_MODEL_IDS[number];
 export const UNSUPPORTED_IMAGE_MODEL_IDS = [
@@ -149,5 +157,9 @@ export const PROVIDER_REFERENCE_LIMITS = {
   "minimax": {
     "image": 1,
     "edit": 1
+  },
+  "novelai": {
+    "image": 0,
+    "edit": 0
   }
 } as const;

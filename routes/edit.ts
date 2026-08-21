@@ -148,6 +148,13 @@ export function registerEditRoutes(app: Express, ctxRaw: RouteRuntimeContext) {
       const sessionId = typeof req.body?.sessionId === "string" ? req.body.sessionId : null;
       const normalizedPromptMode = promptMode === "direct" ? "direct" : "auto";
 
+      if (activeProvider === "novelai") {
+        finishStatus = "error";
+        finishHttpStatus = 400;
+        finishErrorCode = "NOVELAI_EDIT_UNSUPPORTED";
+        return res.status(400).json({ error: "NovelAI image editing is not supported yet", code: "NOVELAI_EDIT_UNSUPPORTED" });
+      }
+
       const started = startJob({
         requestId,
         kind: "classic",
@@ -182,7 +189,7 @@ export function registerEditRoutes(app: Express, ctxRaw: RouteRuntimeContext) {
         finishErrorCode = "INVALID_EDIT_INPUT";
         return res.status(400).json({ error: "Prompt and image are required" });
       }
-      if ((activeProvider === "grok" || activeProvider === "agy" || activeProvider === "grok-api" || activeProvider === "gemini-api" || activeProvider === "atlascloud" || activeProvider === "minimax") && rawMask) {
+      if ((activeProvider === "grok" || activeProvider === "agy" || activeProvider === "grok-api" || activeProvider === "gemini-api" || activeProvider === "atlascloud" || activeProvider === "minimax" || activeProvider === "novelai") && rawMask) {
         finishStatus = "error";
         finishHttpStatus = 400;
         const code = activeProvider === "agy" ? "AGY_MASK_UNSUPPORTED" : activeProvider === "gemini-api" ? "GEMINI_API_MASK_UNSUPPORTED" : activeProvider === "atlascloud" ? "ATLASCLOUD_MASK_UNSUPPORTED" : activeProvider === "minimax" ? "MINIMAX_MASK_UNSUPPORTED" : "GROK_MASK_UNSUPPORTED";

@@ -721,6 +721,7 @@
     "geminiApiKeyRequired": "Gemini API key required",
     "atlasCloudApiKeyRequired": "Atlas Cloud API key required",
     "minimaxApiKeyRequired": "MiniMax API key required",
+    "novelAiApiKeyRequired": "NovelAI Persistent API Token required",
     "comingSoon": "Coming soon",
     "agyCompatTitle": "Gemini (agy)",
     "agyCompatBody": "1024x1024 fixed, JPEG output, max 3 refs. No quality/size control.",
@@ -1308,6 +1309,7 @@
       "atlasCloudGptImage2Edit": "Atlas Cloud GPT Image 2 Edit",
       "minimaxImage01": "MiniMax image-01",
       "minimaxImage01Live": "MiniMax image-01-live",
+      "novelAi45Full": "NovelAI Diffusion V4.5 Full",
       "agy": "Antigravity (agy)",
       "gpt53CodexSpark": "GPT-5.3 Codex Spark — unsupported for images",
       "unsupportedHelp": "Grok models use xAI's Images API through the bundled local proxy. GPT models use OpenAI Responses image generation."
@@ -1335,6 +1337,10 @@
       "minimax": {
         "label": "MiniMax",
         "placeholder": "Paste your MiniMax API key"
+      },
+      "novelai": {
+        "label": "NovelAI",
+        "placeholder": "Paste your NovelAI Persistent API Token"
       },
       "vertex": {
         "label": "Vertex AI (Service Account)",

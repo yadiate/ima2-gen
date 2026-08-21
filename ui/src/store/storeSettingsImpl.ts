@@ -1,6 +1,6 @@
 import type { Provider, Quality, SizePreset, Format, Moderation, ImageModel, Count } from "../types";
 import type { ReasoningEffort } from "../lib/reasoning";
-import { DEFAULT_IMAGE_MODEL, GROK_VIDEO_MODEL_15, isGrokImageModel, isGeminiImageModel, isAtlasCloudImageModel, isMinimaxImageModel, normalizeVideoModelValue } from "../lib/imageModels";
+import { DEFAULT_IMAGE_MODEL, GROK_VIDEO_MODEL_15, isGrokImageModel, isGeminiImageModel, isAtlasCloudImageModel, isMinimaxImageModel, isNovelAiImageModel, normalizeVideoModelValue } from "../lib/imageModels";
 import { parseRequestedCustomSide } from "../lib/size";
 import { getEffectiveVideoSourceCount } from "../lib/videoSourceCount";
 import {
@@ -380,7 +380,11 @@ export function setProviderImpl(provider: Provider, set: StoreSet, get: StoreGet
     const minimaxModel = "image-01";
     saveImageModel(minimaxModel);
     set({ provider, imageModel: minimaxModel });
-  } else if (provider !== "grok" && provider !== "grok-api" && provider !== "agy" && provider !== "gemini-api" && provider !== "atlascloud" && provider !== "minimax" && (isGrokImageModel(currentModel) || isGeminiImageModel(currentModel) || isAtlasCloudImageModel(currentModel) || isMinimaxImageModel(currentModel))) {
+  } else if (provider === "novelai" && !isNovelAiImageModel(currentModel)) {
+    const novelAiModel = "nai-diffusion-4-5-full";
+    saveImageModel(novelAiModel);
+    set({ provider, imageModel: novelAiModel });
+  } else if (provider !== "grok" && provider !== "grok-api" && provider !== "agy" && provider !== "gemini-api" && provider !== "atlascloud" && provider !== "minimax" && provider !== "novelai" && (isGrokImageModel(currentModel) || isGeminiImageModel(currentModel) || isAtlasCloudImageModel(currentModel) || isMinimaxImageModel(currentModel) || isNovelAiImageModel(currentModel))) {
     set({ provider, imageModel: DEFAULT_IMAGE_MODEL });
     saveImageModel(DEFAULT_IMAGE_MODEL);
   } else {
@@ -455,7 +459,12 @@ export function setImageModelImpl(imageModel: ImageModel, set: StoreSet, get: St
     set({ provider: "minimax", imageModel });
     return;
   }
-  if (get().provider === "grok" || get().provider === "agy" || get().provider === "gemini-api" || get().provider === "atlascloud" || get().provider === "minimax") {
+  if (isNovelAiImageModel(imageModel)) {
+    saveGenerationDefaultsPatch({ provider: "novelai" });
+    set({ provider: "novelai", imageModel });
+    return;
+  }
+  if (get().provider === "grok" || get().provider === "agy" || get().provider === "gemini-api" || get().provider === "atlascloud" || get().provider === "minimax" || get().provider === "novelai") {
     saveGenerationDefaultsPatch({ provider: "oauth" });
     set({ provider: "oauth", imageModel });
     return;

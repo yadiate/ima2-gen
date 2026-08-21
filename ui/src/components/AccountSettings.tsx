@@ -198,6 +198,15 @@ export function AccountSettings() {
                 configured={keyStatus.minimax?.configured ?? false}
                 onSaved={mutateKeys}
               />
+              <ApiKeyInput
+                provider="novelai"
+                label={t("settings.apiKeys.novelai.label")}
+                placeholder={t("settings.apiKeys.novelai.placeholder")}
+                maskedKey={keyStatus.novelai?.maskedKey ?? null}
+                source={keyStatus.novelai?.source ?? "none"}
+                configured={keyStatus.novelai?.configured ?? false}
+                onSaved={mutateKeys}
+              />
               <GeminiKeySection
                 keyStatus={keyStatus}
                 onSaved={mutateKeys}

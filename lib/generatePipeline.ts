@@ -17,6 +17,7 @@ import { generateViaAgy } from "./agyImageAdapter.js";
 import { generateViaGeminiApi } from "./geminiApiImageAdapter.js";
 import { generateViaAtlasCloud } from "./atlasCloudImageAdapter.js";
 import { generateViaMinimax } from "./minimaxImageAdapter.js";
+import { generateViaNovelAi } from "./novelAiImageAdapter.js";
 import { isNonRetryableGenerationError, normalizeGenerationFailure, type UpstreamErr } from "./generationErrors.js";
 import { startJob, finishJob, registerJobAbortController, isJobCanceled, isStartJobFailure, setJobPhase, INFLIGHT_RETRY_AFTER_SECONDS, } from "./inflight.js";
 import { isGenerationCanceledError, makeGenerationCanceledError, throwIfJobCanceled, } from "./generationCancel.js";
@@ -314,6 +315,13 @@ export async function runGeneratePipeline(req: Request, res: Response, ctx: Runt
           requestId,
         });
       }
+      if (activeProvider === "novelai" && providerRefCount > 0) {
+        return fail(400, {
+          error: "NovelAI references are not supported yet",
+          code: "NOVELAI_REFERENCES_UNSUPPORTED",
+          requestId,
+        });
+      }
       const started = startJob({
         requestId,
         kind: "classic",
@@ -448,6 +456,17 @@ export async function runGeneratePipeline(req: Request, res: Response, ctx: Runt
           throwIfJobCanceled(requestId);
           return r;
         }
+        if (activeProvider === "novelai") {
+          const r = await generateViaNovelAi(generationPrompt, requireRuntimeContext(ctx), {
+            model: imageModel,
+            size: effectiveSize,
+            signal: cancelController.signal,
+            requestId,
+            references: refCheck.refDetails,
+          });
+          throwIfJobCanceled(requestId);
+          return r;
+        }
         if (activeProvider === "grok" || activeProvider === "grok-api") {
           const grokModel = resolveGrokQualityModel(imageModel, quality);
           const r = await generateViaGrok(generationPrompt, ctx, {
@@ -541,7 +560,7 @@ export async function runGeneratePipeline(req: Request, res: Response, ctx: Runt
           // (lib/atlasCloudImageAdapter.ts), and a transparent PNG mislabeled
           // "image/jpeg" would otherwise be re-encoded to JPEG by
           // embedImageMetadata's sharp.toFormat() and lose its alpha channel.
-          const providerReportsMime = activeProvider === "grok" || activeProvider === "agy" || activeProvider === "grok-api" || activeProvider === "gemini-api" || activeProvider === "atlascloud" || activeProvider === "minimax";
+          const providerReportsMime = activeProvider === "grok" || activeProvider === "agy" || activeProvider === "grok-api" || activeProvider === "gemini-api" || activeProvider === "atlascloud" || activeProvider === "minimax" || activeProvider === "novelai";
           // Lazily decoded: only alpha requests always need the byte check, and
           // the provider-mime path keeps its original short-circuit order.
           const detectMime = () => detectImageMimeFromB64(r.value.b64);

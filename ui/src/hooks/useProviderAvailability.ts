@@ -50,6 +50,7 @@ export function useProviderAvailability(): Record<Provider, ProviderAvailability
   const geminiKeyOk = keyStatus?.gemini?.valid === true || keyStatus?.vertex?.valid === true;
   const atlasCloudKeyOk = keyStatus?.atlascloud?.valid === true;
   const minimaxKeyOk = keyStatus?.minimax?.valid === true;
+  const novelAiKeyOk = keyStatus?.novelai?.valid === true;
 
   return {
     oauth: { ok: oauthReady, reason: oauthReason, hint: oauthHint },
@@ -81,6 +82,10 @@ export function useProviderAvailability(): Record<Provider, ProviderAvailability
     minimax: {
       ok: minimaxKeyOk,
       reason: minimaxKeyOk ? "" : t("provider.minimaxApiKeyRequired"),
+    },
+    novelai: {
+      ok: novelAiKeyOk,
+      reason: novelAiKeyOk ? "" : t("provider.novelAiApiKeyRequired"),
     },
   };
 }
