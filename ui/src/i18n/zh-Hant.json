@@ -1340,7 +1340,9 @@
       },
       "novelai": {
         "label": "NovelAI",
-        "placeholder": "貼上您的 NovelAI Persistent API Token"
+        "placeholder": "貼上您的 NovelAI Persistent API Token",
+        "eyebrow": "Persistent API Token",
+        "body": "在此儲存 NovelAI Token，然後在生成頁面的供應商選單中選擇 NovelAI。"
       },
       "vertex": {
         "label": "Vertex AI（服務帳戶）",

@@ -1340,7 +1340,9 @@
       },
       "novelai": {
         "label": "NovelAI",
-        "placeholder": "Paste your NovelAI Persistent API Token"
+        "placeholder": "Paste your NovelAI Persistent API Token",
+        "eyebrow": "Persistent API Token",
+        "body": "Save your NovelAI token here, then select NovelAI from the generation provider menu."
       },
       "vertex": {
         "label": "Vertex AI (Service Account)",
