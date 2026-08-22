@@ -53,7 +53,7 @@ describe("core provider registry parity", () => {
   it("preserves all four reference-capacity layers", () => {
     assert.equal(config.limits.maxRefCount, 5);
     assert.deepEqual(referenceLimits("image"), {
-      grok: 3, "grok-api": 3, agy: 3, "gemini-api": 3, atlascloud: 10, minimax: 1, novelai: 0,
+      grok: 3, "grok-api": 3, agy: 3, "gemini-api": 3, atlascloud: 10, minimax: 1, novelai: 16,
     });
     assert.deepEqual(referenceLimits("video"), { grok: 7, "grok-api": 7 });
     assert.deepEqual(ELEMENT_CAPACITY_DEFAULTS, {

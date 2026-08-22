@@ -5,6 +5,7 @@
 import { create } from "zustand";
 import type { VideoResolutionUI } from "../types";
 import { getBrowserId } from "../lib/api";
+import { DEFAULT_NOVELAI_OPTIONS } from "../lib/novelAiSettings";
 import {
   isGrokImageModel,
 } from "../lib/imageModels";
@@ -122,6 +123,7 @@ import {
   setImageModelImpl, selectVideoModelImpl, activeVideoRefCountImpl,
   setReasoningEffortImpl, setWebSearchEnabledImpl, setCountImpl,
   setMultimodeImpl, setMultimodeMaxImagesImpl, setPromptModeImpl, setPromptImpl,
+  setNovelAiOptionsImpl,
   getResolvedSizeImpl,
 } from "./storeSettingsImpl";
 import {
@@ -263,6 +265,7 @@ export const useAppStore = create<AppState>((set, get, store) => ({
   multimodePreviewFlightId: null,
   promptMode: storedGenerationDefaults.promptMode ?? "auto",
   prompt: storedGenerationDefaults.prompt ?? "",
+  novelAiOptions: storedGenerationDefaults.novelAiOptions ?? DEFAULT_NOVELAI_OPTIONS,
   insertedPrompts: storedGenerationDefaults.insertedPrompts ?? [],
   mcpInputRoles: [],
   mcpReferenceSelection: emptyMcpReferenceSelection(),
@@ -562,6 +565,7 @@ addChildNodeAt: (parentClientId, position, sourceHandle) => addChildNodeAtImpl(p
   },
   setReasoningEffort: (reasoningEffort) => setReasoningEffortImpl(reasoningEffort, set),
   setWebSearchEnabled: (webSearchEnabled) => setWebSearchEnabledImpl(webSearchEnabled, set),
+  setNovelAiOptions: (patch) => setNovelAiOptionsImpl(patch, set, get),
   setCount: (count) => setCountImpl(count, set),
   setMultimode: (enabled) => setMultimodeImpl(enabled, set, get),
   setMultimodeMaxImages: (count) => setMultimodeMaxImagesImpl(count, set),

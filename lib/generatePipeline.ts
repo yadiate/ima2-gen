@@ -315,13 +315,6 @@ export async function runGeneratePipeline(req: Request, res: Response, ctx: Runt
           requestId,
         });
       }
-      if (activeProvider === "novelai" && providerRefCount > 0) {
-        return fail(400, {
-          error: "NovelAI references are not supported yet",
-          code: "NOVELAI_REFERENCES_UNSUPPORTED",
-          requestId,
-        });
-      }
       const started = startJob({
         requestId,
         kind: "classic",
@@ -463,6 +456,7 @@ export async function runGeneratePipeline(req: Request, res: Response, ctx: Runt
             signal: cancelController.signal,
             requestId,
             references: refCheck.refDetails,
+            novelAiOptions: req.body?.novelAiOptions,
           });
           throwIfJobCanceled(requestId);
           return r;

@@ -314,6 +314,7 @@ export async function runNodeGeneration(req: Request, res: Response, ctx: Runtim
                 size: effectiveSize,
                 signal: cancelController.signal,
                 requestId,
+                novelAiOptions: body.novelAiOptions,
                 references: parentB64
                   ? [{ b64: parentB64 }, ...((refCheck.refDetails || []) as Array<{ b64: string }>)]
                   : refCheck.refDetails,

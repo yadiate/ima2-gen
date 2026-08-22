@@ -192,7 +192,7 @@ export const REGISTRY = [
     models: [
       { id: "nai-diffusion-4-5-full", kind: "image", supports: GENERATE_ONLY },
     ],
-    referenceLimits: { image: 0, edit: 0 },
+    referenceLimits: { image: 16, edit: 0 },
     elementTaxonomy: "gpt",
     limits: { timeoutMs: 180_000 },
     errorPrefix: "NOVELAI_",

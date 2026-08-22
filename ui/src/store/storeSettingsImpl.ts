@@ -1,4 +1,4 @@
-import type { Provider, Quality, SizePreset, Format, Moderation, ImageModel, Count } from "../types";
+import type { Provider, Quality, SizePreset, Format, Moderation, ImageModel, Count, NovelAiGenerationOptions } from "../types";
 import type { ReasoningEffort } from "../lib/reasoning";
 import { DEFAULT_IMAGE_MODEL, GROK_VIDEO_MODEL_15, isGrokImageModel, isGeminiImageModel, isAtlasCloudImageModel, isMinimaxImageModel, isNovelAiImageModel, normalizeVideoModelValue } from "../lib/imageModels";
 import { parseRequestedCustomSide } from "../lib/size";
@@ -526,6 +526,12 @@ export function setPromptModeImpl(promptMode: "auto" | "direct", set: StoreSet):
 export function setPromptImpl(prompt: string, set: StoreSet): void {
   saveGenerationDefaultsPatch({ prompt });
   set({ prompt });
+}
+
+export function setNovelAiOptionsImpl(patch: Partial<NovelAiGenerationOptions>, set: StoreSet, get: StoreGet): void {
+  const novelAiOptions = { ...get().novelAiOptions, ...patch };
+  saveGenerationDefaultsPatch({ novelAiOptions });
+  set({ novelAiOptions });
 }
 
 export function getResolvedSizeImpl(get: StoreGet): string {

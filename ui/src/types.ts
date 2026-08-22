@@ -25,6 +25,33 @@ export type VideoResolutionUI = "480p" | "720p" | "1080p";
 export type UnsupportedImageModel = UnsupportedImageModelId;
 export type Count = number;
 
+export type NovelAiCharacterPrompt = {
+  prompt: string;
+  negativePrompt: string;
+  position: "left" | "center" | "right";
+};
+
+export type NovelAiGenerationOptions = {
+  negativePrompt: string;
+  ucPreset: "heavy" | "light" | "human" | "furry" | "none";
+  sampler: "k_euler" | "k_euler_ancestral" | "k_dpmpp_2s_ancestral" | "k_dpmpp_2m" | "k_dpmpp_sde";
+  noiseSchedule: "native" | "karras" | "exponential" | "polyexponential";
+  steps: number;
+  scale: number;
+  cfgRescale: number;
+  seed: number | null;
+  qualityTags: boolean;
+  smea: "off" | "auto" | "smea" | "dynamic";
+  decrisper: boolean;
+  characters: NovelAiCharacterPrompt[];
+  referenceMode: "none" | "img2img" | "vibe" | "precise-character" | "precise-style" | "precise-character-style";
+  referenceStrength: number;
+  referenceInformationExtracted: number;
+  referenceFidelity: number;
+  img2imgStrength: number;
+  img2imgNoise: number;
+};
+
 export type ComposerInsertedPromptSnapshot = {
   id: string;
   name: string;
@@ -246,6 +273,7 @@ export type GenerateRequest = {
   composerInsertedPrompts?: ComposerInsertedPromptSnapshot[];
   providerUrl?: string;
   backgroundPreset?: AssetGenBackgroundPreset;
+  novelAiOptions?: NovelAiGenerationOptions;
 };
 
 export type MultimodeGenerateRequest = Omit<GenerateRequest, "n"> & {

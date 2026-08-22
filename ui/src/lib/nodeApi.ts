@@ -1,4 +1,4 @@
-import type { ImageModel, Provider } from "../types";
+import type { ImageModel, NovelAiGenerationOptions, Provider } from "../types";
 import { subscribe, ensureConnected, armStreamTimeout } from "./eventChannel";
 import { cancelInflight } from "./api-inflight";
 import { parseSseErrorPayload } from "./sseStreamError";
@@ -19,6 +19,7 @@ export type NodeGenerateRequest = {
   searchMode?: "off" | "auto" | "on";
   webSearchEnabled?: boolean;
   references?: string[];
+  novelAiOptions?: NovelAiGenerationOptions;
   /** Resolved element inputs for this run (higgsfield 120): server records
    * ids/revisions into the sidecar and appends notes at generation time
    * while keeping the stored prompt raw. */

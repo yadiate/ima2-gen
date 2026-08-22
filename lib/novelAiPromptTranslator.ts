@@ -2,11 +2,15 @@ import type { RuntimeContext } from "./runtimeContext.js";
 import { getGrokEndpoint, getPlannerConfig, withTimeoutSignal } from "./grokImageCore.js";
 import { grokFetchWithRetry } from "./grokUpstreamRetry.js";
 import { logEvent } from "./logger.js";
+import type { NovelAiCharacterPrompt } from "./novelAiOptions.js";
 
-const NOVELAI_TRANSLATOR_PROMPT = `Translate the user's image prompt into English for NovelAI Diffusion V4.5.
-Preserve every requested subject, action, relationship, visual detail, proper name, and any literal text to render.
-Keep existing English tags when useful. Express the result as a concise, comma-separated NovelAI image prompt.
-Do not add commentary, Markdown, quotation marks, or explanations. Return only the final English prompt.`;
+const NOVELAI_TRANSLATOR_PROMPT = `Translate all supplied image-prompt fields into English for NovelAI Diffusion V4.5.
+Preserve every requested subject, action, relationship, visual detail, proper name, and literal text to render.
+Keep existing English tags when useful. Use concise comma-separated NovelAI tags where natural.
+The negativePrompt fields describe content to avoid; preserve that negative meaning.
+Return only valid JSON with exactly this shape:
+{"prompt":"...","negativePrompt":"...","characters":[{"prompt":"...","negativePrompt":"..."}]}
+Keep the characters array in the same order and with the same length as the input.`;
 
 type ChatCompletionBody = {
   choices?: Array<{ message?: { content?: string } }>;
@@ -27,11 +31,48 @@ function cleanTranslatedPrompt(value: string): string {
   return (fenced?.[1] || trimmed).trim();
 }
 
+type TranslationBundle = {
+  prompt: string;
+  negativePrompt: string;
+  characters: Array<{ prompt: string; negativePrompt: string }>;
+};
+
+function parseTranslationBundle(
+  content: string,
+  input: { negativePrompt: string; characters: NovelAiCharacterPrompt[] },
+): TranslationBundle {
+  const cleaned = cleanTranslatedPrompt(content);
+  try {
+    const parsed = JSON.parse(cleaned) as Partial<TranslationBundle>;
+    if (typeof parsed.prompt !== "string" || !parsed.prompt.trim()) throw new Error("missing prompt");
+    const characters = Array.isArray(parsed.characters) ? parsed.characters : [];
+    if (characters.length !== input.characters.length) throw new Error("character count changed");
+    return {
+      prompt: parsed.prompt.trim(),
+      negativePrompt: typeof parsed.negativePrompt === "string" ? parsed.negativePrompt.trim() : "",
+      characters: characters.map((character) => ({
+        prompt: typeof character?.prompt === "string" ? character.prompt.trim() : "",
+        negativePrompt: typeof character?.negativePrompt === "string" ? character.negativePrompt.trim() : "",
+      })),
+    };
+  } catch {
+    if (!input.negativePrompt.trim() && input.characters.length === 0 && cleaned) {
+      return { prompt: cleaned, negativePrompt: "", characters: [] };
+    }
+    throw translationError("Grok returned an invalid structured NovelAI prompt", 502, "NOVELAI_GROK_TRANSLATION_INVALID");
+  }
+}
+
 export async function translateNovelAiPromptWithGrok(
   prompt: string,
   ctx: RuntimeContext,
-  options: { signal?: AbortSignal; requestId?: string } = {},
-): Promise<{ prompt: string; model: string }> {
+  options: {
+    signal?: AbortSignal;
+    requestId?: string;
+    negativePrompt?: string;
+    characters?: NovelAiCharacterPrompt[];
+  } = {},
+): Promise<TranslationBundle & { model: string }> {
   const planner = getPlannerConfig(ctx);
   const { url, headers } = getGrokEndpoint(ctx, "/v1/chat/completions");
   const { combinedSignal, timer } = withTimeoutSignal(options.signal, planner.timeoutMs);
@@ -53,7 +94,14 @@ export async function translateNovelAiPromptWithGrok(
         temperature: 0.2,
         messages: [
           { role: "system", content: NOVELAI_TRANSLATOR_PROMPT },
-          { role: "user", content: prompt },
+          { role: "user", content: JSON.stringify({
+            prompt,
+            negativePrompt: options.negativePrompt || "",
+            characters: (options.characters || []).map((character) => ({
+              prompt: character.prompt,
+              negativePrompt: character.negativePrompt,
+            })),
+          }) },
         ],
       }),
       signal: combinedSignal,
@@ -74,18 +122,23 @@ export async function translateNovelAiPromptWithGrok(
     }
 
     const body = await response.json() as ChatCompletionBody;
-    const translatedPrompt = cleanTranslatedPrompt(body.choices?.[0]?.message?.content || "");
-    if (!translatedPrompt) {
+    const content = body.choices?.[0]?.message?.content || "";
+    if (!content.trim()) {
       throw translationError("Grok returned an empty NovelAI prompt", 502, "NOVELAI_GROK_TRANSLATION_EMPTY");
     }
+    const translated = parseTranslationBundle(content, {
+      negativePrompt: options.negativePrompt || "",
+      characters: options.characters || [],
+    });
 
     logEvent("novelai", "translate:done", {
       requestId: options.requestId,
       translator: "grok",
       model: planner.model,
-      promptChars: translatedPrompt.length,
+      promptChars: translated.prompt.length,
+      characterCount: translated.characters.length,
     });
-    return { prompt: translatedPrompt, model: planner.model };
+    return { ...translated, model: planner.model };
   } catch (cause) {
     if ((cause as { code?: string }).code?.startsWith("NOVELAI_GROK_")) throw cause;
     if ((cause as { name?: string }).name === "AbortError" || (cause as { name?: string }).name === "TimeoutError") {

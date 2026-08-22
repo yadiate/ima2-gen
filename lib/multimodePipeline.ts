@@ -403,6 +403,7 @@ export async function runMultimodePipeline(req: Request, res: Response, ctx: Run
           signal: cancelController.signal,
           requestId,
           references: refCheck.refDetails,
+          novelAiOptions: req.body?.novelAiOptions,
         });
         generated = {
           images: [{ b64: r.b64, revisedPrompt: r.revisedPrompt }],

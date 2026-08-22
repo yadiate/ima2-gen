@@ -159,7 +159,7 @@ export const PROVIDER_REFERENCE_LIMITS = {
     "edit": 1
   },
   "novelai": {
-    "image": 0,
+    "image": 16,
     "edit": 0
   }
 } as const;
