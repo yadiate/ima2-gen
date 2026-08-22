@@ -721,6 +721,7 @@
     "geminiApiKeyRequired": "Gemini API 需要密鑰",
     "atlasCloudApiKeyRequired": "Atlas Cloud 需要 API 金鑰",
     "minimaxApiKeyRequired": "MiniMax API 需要密鑰",
+    "novelAiApiKeyRequired": "需要 NovelAI Persistent API Token",
     "comingSoon": "即將推出",
     "agyCompatTitle": "Gemini (agy)",
     "agyCompatBody": "1024x1024 固定，JPEG 輸出，最多 3 個參考。沒有品質/尺寸控制。",
@@ -1308,6 +1309,8 @@
       "atlasCloudGptImage2Edit": "阿特拉斯雲 GPT Image 2 編輯",
       "minimaxImage01": "MiniMax image-01",
       "minimaxImage01Live": "MiniMax image-01-live",
+      "novelAi5Full": "NovelAI Diffusion V5 Full",
+      "novelAi45Full": "NovelAI Diffusion V4.5 Full",
       "agy": "Antigravity (agy)",
       "gpt53CodexSpark": "GPT-5.3 Codex Spark — 不支援影像",
       "unsupportedHelp": "Grok 模型透過捆綁的本地代理使用 xAI 的圖像 API。 GPT 模型使用 OpenAI 回應影像產生。"
@@ -1335,6 +1338,12 @@
       "minimax": {
         "label": "MiniMax",
         "placeholder": "貼上您的 MiniMax API 密鑰"
+      },
+      "novelai": {
+        "label": "NovelAI",
+        "placeholder": "貼上您的 NovelAI Persistent API Token",
+        "eyebrow": "Persistent API Token",
+        "body": "在此儲存 NovelAI Token，然後在生成頁面的供應商選單中選擇 NovelAI。"
       },
       "vertex": {
         "label": "Vertex AI（服務帳戶）",

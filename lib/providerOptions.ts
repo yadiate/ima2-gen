@@ -1,6 +1,6 @@
 import type { RuntimeContext } from "./runtimeContext.js";
 import { ATLASCLOUD_TEXT_TO_IMAGE_MODEL } from "./atlasCloudImageAdapter.js";
-import { FALLBACK_IMAGE_MODEL, normalizeImageModel, normalizeReasoningEffort, normalizeGrokImageModel, normalizeGeminiApiModel, normalizeMinimaxImageModel } from "./imageModels.js";
+import { FALLBACK_IMAGE_MODEL, normalizeImageModel, normalizeReasoningEffort, normalizeGrokImageModel, normalizeGeminiApiModel, normalizeMinimaxImageModel, normalizeNovelAiImageModel } from "./imageModels.js";
 
 export function resolveProviderOptions(ctx: RuntimeContext | null | undefined, {
   provider = "oauth",
@@ -50,6 +50,19 @@ export function resolveProviderOptions(ctx: RuntimeContext | null | undefined, {
     return {
       provider: "minimax" as const,
       model: minimaxModelCheck.model,
+      reasoningEffort: "none",
+      size: rawSize || "1024x1024",
+      webSearchEnabled: false,
+    };
+  }
+
+  if (provider === "novelai") {
+    const novelAiCfg: { defaultImageModel?: string } = (ctx?.config as any)?.novelAiProvider || {};
+    const modelCheck = normalizeNovelAiImageModel(rawModel || novelAiCfg.defaultImageModel);
+    if (modelCheck.error) return { error: modelCheck.error, code: modelCheck.code, status: modelCheck.status };
+    return {
+      provider: "novelai" as const,
+      model: modelCheck.model,
       reasoningEffort: "none",
       size: rawSize || "1024x1024",
       webSearchEnabled: false,

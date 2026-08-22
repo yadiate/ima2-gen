@@ -363,6 +363,10 @@ export const config = {
     cnBaseUrl: pickStr(env.IMA2_MINIMAX_CN_BASE_URL, fileCfg.minimaxProvider?.cnBaseUrl, "https://api.minimaxi.com/v1"),
     generationTimeoutMs: pickInt(env.IMA2_MINIMAX_GENERATION_TIMEOUT_MS, fileCfg.minimaxProvider?.generationTimeoutMs, 120_000),
   },
+  novelAiProvider: {
+    defaultImageModel: pickStr(env.IMA2_NOVELAI_IMAGE_MODEL_DEFAULT, fileCfg.novelAiProvider?.defaultImageModel, "nai-diffusion-5-full"),
+    generationTimeoutMs: pickInt(env.IMA2_NOVELAI_GENERATION_TIMEOUT_MS, fileCfg.novelAiProvider?.generationTimeoutMs, 180_000),
+  },
   log: {
     level: pickStr(env.IMA2_LOG_LEVEL, fileCfg.log?.level, defaultLogLevelForEnv(env)),
     pretty: env.NODE_ENV !== "production",

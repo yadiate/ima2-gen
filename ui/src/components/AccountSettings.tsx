@@ -151,6 +151,32 @@ export function AccountSettings() {
       </article>
 
       {keyStatus && (
+        <article className="provider-card">
+          <div className="provider-card__head">
+            <h4>{t("settings.apiKeys.novelai.label")}</h4>
+            <span className="provider-card__eyebrow">{t("settings.apiKeys.novelai.eyebrow")}</span>
+            <span className={`provider-chip provider-chip--${keyStatus.novelai?.configured ? "ok" : "warn"}`}>
+              {keyStatus.novelai?.configured
+                ? t("settings.apiKeys.status.valid")
+                : t("settings.apiKeys.status.notConfigured")}
+            </span>
+          </div>
+          <div className="settings-row__copy">
+            <p>{t("settings.apiKeys.novelai.body")}</p>
+          </div>
+          <ApiKeyInput
+            provider="novelai"
+            label={t("settings.apiKeys.novelai.label")}
+            placeholder={t("settings.apiKeys.novelai.placeholder")}
+            maskedKey={keyStatus.novelai?.maskedKey ?? null}
+            source={keyStatus.novelai?.source ?? "none"}
+            configured={keyStatus.novelai?.configured ?? false}
+            onSaved={mutateKeys}
+          />
+        </article>
+      )}
+
+      {keyStatus && (
         <article className="settings-row settings-accordion">
           <button
             type="button"

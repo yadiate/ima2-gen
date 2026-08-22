@@ -14,6 +14,7 @@ import { generateViaAgy } from "./agyImageAdapter.js";
 import { generateViaGeminiApi } from "./geminiApiImageAdapter.js";
 import { generateViaAtlasCloud } from "./atlasCloudImageAdapter.js";
 import { generateViaMinimax } from "./minimaxImageAdapter.js";
+import { generateViaNovelAi } from "./novelAiImageAdapter.js";
 import { isNonRetryableGenerationError, normalizeGenerationFailure, type UpstreamErr } from "./generationErrors.js";
 import { logEvent, logError } from "./logger.js";
 import { errInfo } from "./errInfo.js";
@@ -307,6 +308,17 @@ export async function runNodeGeneration(req: Request, res: Response, ctx: Runtim
                   ? [{ b64: parentB64, declaredMime: null, detectedMime: null }, ...((refCheck.refDetails || []) as any[])]
                   : refCheck.refDetails,
               })
+            : activeProvider === "novelai"
+            ? await generateViaNovelAi(generationPrompt, requireRuntimeContext(ctx), {
+                model: effectiveImageModel,
+                size: effectiveSize,
+                signal: cancelController.signal,
+                requestId,
+                novelAiOptions: body.novelAiOptions,
+                references: parentB64
+                  ? [{ b64: parentB64 }, ...((refCheck.refDetails || []) as Array<{ b64: string }>)]
+                  : refCheck.refDetails,
+              })
             : activeProvider === "grok" || activeProvider === "grok-api"
             ? await generateViaGrok(generationPrompt, ctx, {
                 model: effectiveImageModel,
@@ -357,7 +369,7 @@ export async function runNodeGeneration(req: Request, res: Response, ctx: Runtim
             usage = r.usage;
             webSearchCalls = r.webSearchCalls || 0;
             revisedPrompt = r.revisedPrompt || null;
-            if (activeProvider === "grok" || activeProvider === "grok-api" || activeProvider === "gemini-api" || activeProvider === "atlascloud" || activeProvider === "minimax") {
+            if (activeProvider === "grok" || activeProvider === "grok-api" || activeProvider === "gemini-api" || activeProvider === "atlascloud" || activeProvider === "minimax" || activeProvider === "novelai") {
               resultFormat = imageFormatFromMime(("mime" in r ? r.mime : undefined) || detectImageMimeFromB64(r.b64) || "image/jpeg");
             }
             break;

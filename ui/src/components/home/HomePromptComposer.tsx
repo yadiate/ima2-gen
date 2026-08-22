@@ -16,6 +16,7 @@ const PROVIDER_LABELS: Record<Provider, string> = {
   "gemini-api": "Gemini API",
   atlascloud: "Atlas Cloud",
   minimax: "MiniMax",
+  novelai: "NovelAI",
 };
 
 function homeReferenceThumbnail(item: TrayItem): string | undefined {

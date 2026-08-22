@@ -50,6 +50,9 @@ export interface RuntimeContext {
   minimaxApiKey: string | undefined;
   minimaxApiKeySource: ApiKeySource;
   hasMinimaxApiKey: boolean;
+  novelAiApiKey: string | undefined;
+  novelAiApiKeySource: ApiKeySource;
+  hasNovelAiApiKey: boolean;
   vertexServiceAccountJson: string | undefined;
   vertexProjectId: string | undefined;
   hasVertexKey: boolean;
@@ -133,6 +136,9 @@ export function requireRuntimeContext(ctx: RouteRuntimeContext | undefined): Run
   if (target.minimaxApiKey === undefined && !Object.prototype.hasOwnProperty.call(target, 'minimaxApiKey')) target.minimaxApiKey = undefined;
   if (target.hasMinimaxApiKey === undefined) target.hasMinimaxApiKey = false;
   if (target.minimaxApiKeySource === undefined) target.minimaxApiKeySource = undefined;
+  if (target.novelAiApiKey === undefined && !Object.prototype.hasOwnProperty.call(target, 'novelAiApiKey')) target.novelAiApiKey = undefined;
+  if (target.hasNovelAiApiKey === undefined) target.hasNovelAiApiKey = false;
+  if (target.novelAiApiKeySource === undefined) target.novelAiApiKeySource = undefined;
   if (target.vertexServiceAccountJson === undefined && !Object.prototype.hasOwnProperty.call(target, 'vertexServiceAccountJson')) target.vertexServiceAccountJson = undefined;
   if (target.vertexProjectId === undefined) target.vertexProjectId = undefined;
   if (target.hasVertexKey === undefined) target.hasVertexKey = false;
@@ -200,6 +206,9 @@ export function createTestRuntimeContext(over: RuntimeContextOverrides = {}): Ru
     minimaxApiKey: undefined,
     minimaxApiKeySource: undefined,
     hasMinimaxApiKey: false,
+    novelAiApiKey: undefined,
+    novelAiApiKeySource: undefined,
+    hasNovelAiApiKey: false,
     vertexServiceAccountJson: undefined,
     vertexProjectId: undefined,
     hasVertexKey: false,

@@ -15,7 +15,7 @@ describe("core provider registry contract", () => {
     const ids = REGISTRY.map((provider) => provider.id);
     assert.equal(new Set(ids).size, ids.length);
     assert.deepEqual(ids, [
-      "oauth", "api", "grok", "grok-api", "agy", "gemini-api", "atlascloud", "minimax",
+      "oauth", "api", "grok", "grok-api", "agy", "gemini-api", "atlascloud", "minimax", "novelai",
     ]);
   });
 
@@ -31,6 +31,7 @@ describe("core provider registry contract", () => {
     assert.deepEqual(byKeyVocabulary("openai").map((provider) => provider.id), ["api"]);
     assert.deepEqual(byKeyVocabulary("xai").map((provider) => provider.id), ["grok-api"]);
     assert.deepEqual(byKeyVocabulary("gemini").map((provider) => provider.id), ["gemini-api"]);
+    assert.deepEqual(byKeyVocabulary("novelai").map((provider) => provider.id), ["novelai"]);
     const gemini = REGISTRY.find((provider) => provider.id === "gemini-api")!;
     assert.deepEqual(gemini.credentials.map((credential) => credential.kind), ["api-key", "service-account"]);
     const agy = REGISTRY.find((provider) => provider.id === "agy")!;

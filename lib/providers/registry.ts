@@ -13,6 +13,7 @@ const EDIT = { edit: true, mask: false, streaming: false } as const;
 // route reaches it, so it does not describe current behavior.
 const RESPONSES = { edit: true, mask: true, streaming: true } as const;
 const UNSUPPORTED = { edit: false, mask: false, streaming: false } as const;
+const GENERATE_ONLY = { edit: false, mask: false, streaming: true } as const;
 
 export const REGISTRY = [
   {
@@ -177,6 +178,25 @@ export const REGISTRY = [
     elementTaxonomy: "gpt",
     limits: { timeoutMs: 120_000, maxInputBytes: 50 * 1024 * 1024 },
     errorPrefix: "MINIMAX_",
+  },
+  {
+    id: "novelai",
+    vendor: "novelai",
+    credentials: [{
+      kind: "api-key",
+      keyVocabulary: "novelai",
+      envVars: ["NOVELAI_API_KEY"],
+      validateUrl: "https://api.novelai.net/user/subscription",
+      configKey: "novelAiApiKey",
+    }],
+    models: [
+      { id: "nai-diffusion-5-full", kind: "image", supports: GENERATE_ONLY },
+      { id: "nai-diffusion-4-5-full", kind: "image", supports: GENERATE_ONLY },
+    ],
+    referenceLimits: { image: 16, edit: 0 },
+    elementTaxonomy: "gpt",
+    limits: { timeoutMs: 180_000 },
+    errorPrefix: "NOVELAI_",
   },
 ] as const satisfies readonly CoreProviderManifestBase[];
 

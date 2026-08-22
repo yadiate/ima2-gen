@@ -10,6 +10,7 @@ import { GrokSizePicker } from "./GrokSizePicker";
 import { GrokModelPicker } from "./GrokModelPicker";
 import { VideoControlsPanel } from "./VideoControlsPanel";
 import { McpGenerationControls } from "./settings/McpGenerationControls";
+import { NovelAiControls } from "./NovelAiControls";
 import { useMcpProviders } from "../lib/mcpProviders";
 import type { Format, GeminiImageModel, Moderation, Quality } from "../types";
 
@@ -107,8 +108,9 @@ export function GenerationControlsPanel() {
   const isGrok = provider === "grok" || provider === "grok-api";
   const isAgyOnly = provider === "agy";
   const isGeminiApi = provider === "gemini-api";
+  const isNovelAi = provider === "novelai";
   const isAnyGemini = isAgyOnly || isGeminiApi;
-  const hideFormatControls = isGrok || isAnyGemini;
+  const hideFormatControls = isGrok || isAnyGemini || isNovelAi;
 
   const currentSize = sizePreset === "custom" ? `${customW}x${customH}` : "1024x1024";
   const isGeminiAuto = isGeminiApi && sizePreset === "auto";
@@ -162,6 +164,8 @@ export function GenerationControlsPanel() {
       ? { title: t("provider.agyCompatTitle"), body: t("provider.agyCompatBody") }
       : isGeminiApi
         ? { title: t("provider.geminiApiCompatTitle"), body: t("provider.geminiApiCompatBody") }
+        : isNovelAi
+          ? { title: t("provider.novelAiCompatTitle"), body: t("provider.novelAiCompatBody") }
         : { title: t("provider.gptCompatTitle"), body: t("provider.gptCompatBody") };
 
   const handleModeSwitch = (mode: "image" | "video") => {
@@ -325,6 +329,11 @@ export function GenerationControlsPanel() {
             </>
           ) : null}
         </div>
+        </>
+      ) : isNovelAi ? (
+        <>
+          <SizePicker />
+          <NovelAiControls />
         </>
       ) : (
         <>

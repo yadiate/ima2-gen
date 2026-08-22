@@ -26,6 +26,7 @@ import { DEFAULT_WEB_SEARCH_ENABLED } from "../lib/webSearch";
 import { ENABLE_AGENT_MODE, ENABLE_CARD_NEWS_MODE, ENABLE_NODE_MODE } from "../lib/devMode";
 import { normalizeGenerationCount } from "../lib/generationLimits";
 import { parseRequestedCustomSide } from "../lib/size";
+import { normalizeNovelAiOptions } from "../lib/novelAiSettings";
 import {
   ACTIVE_SESSION_ID_STORAGE_KEY,
   CANVAS_EXPORT_BG_KEY,
@@ -377,6 +378,9 @@ export function loadGenerationDefaults(): GenerationDefaults {
     }
     if (isPromptMode(parsed.promptMode)) out.promptMode = parsed.promptMode;
     if (typeof parsed.prompt === "string") out.prompt = parsed.prompt;
+    if (parsed.novelAiOptions && typeof parsed.novelAiOptions === "object") {
+      out.novelAiOptions = normalizeNovelAiOptions(parsed.novelAiOptions);
+    }
     const insertedPrompts = normalizeInsertedPromptArray(parsed.insertedPrompts);
     if (insertedPrompts) out.insertedPrompts = insertedPrompts;
     // presetIds is deliberately dropped on load. The preset grid was removed

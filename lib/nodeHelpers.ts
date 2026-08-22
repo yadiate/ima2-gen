@@ -27,6 +27,7 @@ export interface NodeGenerateBody {
   reasoningEffort?: string;
   provider?: string;
   webSearchEnabled?: boolean;
+  novelAiOptions?: unknown;
   async?: boolean;
   elementIds?: unknown;
   elementRevisions?: unknown;

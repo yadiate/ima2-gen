@@ -222,6 +222,7 @@ export async function runGenerateNodeInPlaceImpl(
       contextMode: "parent-plus-refs",
       searchMode: s.webSearchEnabled ? "on" : "off",
       webSearchEnabled: s.webSearchEnabled,
+      novelAiOptions: nodeProvider === "novelai" ? s.novelAiOptions : undefined,
       ...(nodeRefs.length
         ? { references: nodeRefs.map(stripDataUrlPrefix) }
         : {}),

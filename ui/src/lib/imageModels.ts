@@ -1,4 +1,4 @@
-import type { ImageModel, OpenAIImageModel, GeminiImageModel, AtlasCloudImageModel, MinimaxImageModel, Provider, UnsupportedImageModel, VideoModel } from "../types";
+import type { ImageModel, OpenAIImageModel, GeminiImageModel, AtlasCloudImageModel, MinimaxImageModel, NovelAiImageModel, Provider, UnsupportedImageModel, VideoModel } from "../types";
 import { PROVIDER_MODELS } from "../generated/providers";
 
 export const DEFAULT_IMAGE_MODEL: ImageModel = "gpt-5.6-luna";
@@ -26,18 +26,22 @@ export const IMAGE_MODEL_OPTIONS: Array<{
   { value: "openai/gpt-image-2/edit", shortLabel: "atlas edit", fullLabelKey: "settings.imageModel.atlasCloudGptImage2Edit", providerHint: "atlascloud" },
   { value: "image-01", shortLabel: "minimax", fullLabelKey: "settings.imageModel.minimaxImage01", providerHint: "minimax" },
   { value: "image-01-live", shortLabel: "minimax live", fullLabelKey: "settings.imageModel.minimaxImage01Live", providerHint: "minimax" },
+  { value: "nai-diffusion-5-full", shortLabel: "NAI 5", fullLabelKey: "settings.imageModel.novelAi5Full", providerHint: "novelai" },
+  { value: "nai-diffusion-4-5-full", shortLabel: "NAI 4.5", fullLabelKey: "settings.imageModel.novelAi45Full", providerHint: "novelai" },
 ];
 
 const GEMINI_MODEL_VALUES = new Set<string>(PROVIDER_MODELS["gemini-api"].image);
 const ATLASCLOUD_MODEL_VALUES = new Set<string>(PROVIDER_MODELS.atlascloud.image);
 const MINIMAX_MODEL_VALUES = new Set<string>(PROVIDER_MODELS.minimax.image);
+const NOVELAI_MODEL_VALUES = new Set<string>(PROVIDER_MODELS.novelai.image);
 
 export const OPENAI_IMAGE_MODEL_OPTIONS = IMAGE_MODEL_OPTIONS.filter(
   (option): option is { value: OpenAIImageModel; shortLabel: string; fullLabelKey: string } =>
     !option.value.startsWith("grok-")
     && !GEMINI_MODEL_VALUES.has(option.value)
     && !ATLASCLOUD_MODEL_VALUES.has(option.value)
-    && !MINIMAX_MODEL_VALUES.has(option.value),
+    && !MINIMAX_MODEL_VALUES.has(option.value)
+    && !NOVELAI_MODEL_VALUES.has(option.value),
 );
 
 export const GROK_IMAGE_MODEL_OPTIONS = IMAGE_MODEL_OPTIONS.filter((option) =>
@@ -57,6 +61,11 @@ export const ATLASCLOUD_IMAGE_MODEL_OPTIONS = IMAGE_MODEL_OPTIONS.filter(
 export const MINIMAX_IMAGE_MODEL_OPTIONS = IMAGE_MODEL_OPTIONS.filter(
   (option): option is { value: MinimaxImageModel; shortLabel: string; fullLabelKey: string; providerHint?: Provider } =>
     MINIMAX_MODEL_VALUES.has(option.value),
+);
+
+export const NOVELAI_IMAGE_MODEL_OPTIONS = IMAGE_MODEL_OPTIONS.filter(
+  (option): option is { value: NovelAiImageModel; shortLabel: string; fullLabelKey: string; providerHint?: Provider } =>
+    NOVELAI_MODEL_VALUES.has(option.value),
 );
 
 export const UNSUPPORTED_IMAGE_MODELS: Array<{
@@ -86,11 +95,16 @@ export function isMinimaxImageModel(value: unknown): boolean {
   return typeof value === "string" && MINIMAX_MODEL_VALUES.has(value);
 }
 
+export function isNovelAiImageModel(value: unknown): boolean {
+  return typeof value === "string" && NOVELAI_MODEL_VALUES.has(value);
+}
+
 export function getImageModelOptionsForProvider(provider: Provider) {
   if (provider === "grok" || provider === "grok-api") return GROK_IMAGE_MODEL_OPTIONS;
   if (provider === "agy" || provider === "gemini-api") return GEMINI_IMAGE_MODEL_OPTIONS;
   if (provider === "atlascloud") return ATLASCLOUD_IMAGE_MODEL_OPTIONS;
   if (provider === "minimax") return MINIMAX_IMAGE_MODEL_OPTIONS;
+  if (provider === "novelai") return NOVELAI_IMAGE_MODEL_OPTIONS;
   return OPENAI_IMAGE_MODEL_OPTIONS;
 }
 
@@ -102,6 +116,7 @@ export function getImageModelShortLabel(value: string | null | undefined, provid
   }
   if (ATLASCLOUD_MODEL_VALUES.has(value)) return provider === "atlascloud" ? "gpt-image-2 atlas" : value;
   if (MINIMAX_MODEL_VALUES.has(value)) return provider === "minimax" ? `${value} minimax` : value;
+  if (NOVELAI_MODEL_VALUES.has(value)) return provider === "novelai" ? `${value} NovelAI` : value;
   return IMAGE_MODEL_OPTIONS.find((option) => option.value === value)?.shortLabel ?? value;
 }
 

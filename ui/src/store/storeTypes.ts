@@ -8,6 +8,7 @@ import type {
   ImageModel,
   Moderation,
   MultimodeSequenceStatus,
+  NovelAiGenerationOptions,
   Provider,
   Quality,
   SettingsSection,
@@ -223,6 +224,7 @@ export type GenerationDefaults = Partial<{
   multimodeMaxImages: Count;
   promptMode: "auto" | "direct";
   prompt: string;
+  novelAiOptions: NovelAiGenerationOptions;
   insertedPrompts: InsertedPrompt[];
   presetIds: string[];
 }>;
@@ -328,6 +330,7 @@ export type AppState = PresetState & ReferenceTraySlice & {
   imageModel: ImageModel;
   reasoningEffort: ReasoningEffort;
   webSearchEnabled: boolean;
+  novelAiOptions: NovelAiGenerationOptions;
   count: Count;
   multimode: boolean;
   multimodeMaxImages: Count;
@@ -519,6 +522,7 @@ export type AppState = PresetState & ReferenceTraySlice & {
   animateImage: (filename: string, prompt?: string) => Promise<boolean>;
   setReasoningEffort: (e: ReasoningEffort) => void;
   setWebSearchEnabled: (enabled: boolean) => void;
+  setNovelAiOptions: (patch: Partial<NovelAiGenerationOptions>) => void;
   setCount: (c: Count) => void;
   setMultimode: (enabled: boolean) => void;
   setMultimodeMaxImages: (c: Count) => void;

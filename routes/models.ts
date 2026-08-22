@@ -3,6 +3,7 @@ import type { Express, Request, Response } from "express";
 import { buildAgyPathEnv, resolveAgyBin } from "../lib/agyCli.js";
 import { ATLASCLOUD_TEXT_TO_IMAGE_MODEL } from "../lib/atlasCloudImageAdapter.js";
 import { MINIMAX_TEXT_TO_IMAGE_MODEL } from "../lib/minimaxImageAdapter.js";
+import { NOVELAI_DEFAULT_IMAGE_MODEL } from "../lib/novelAiImageAdapter.js";
 import { getProviderAdapter } from "../lib/providers/adapters/index.js";
 import {
   MAX_VIDEO_DURATION,
@@ -234,6 +235,15 @@ function minimaxLane(ctx: RuntimeContext): ModelLaneDto {
   });
 }
 
+function novelAiLane(ctx: RuntimeContext): ModelLaneDto {
+  const state: LaneState = ctx.novelAiApiKey
+    ? { status: "ready" }
+    : { status: "key-missing", reason: "NovelAI Persistent API Token missing" };
+  return lane(state, { image: NOVELAI_DEFAULT_IMAGE_MODEL }, {
+    image: entries(deriveModels("novelai", "image")), video: [],
+  });
+}
+
 function buildCoreLanes(ctx: RuntimeContext, agyInstalled: boolean) {
   const gptModels = entries(ctx.config.imageModels.valid);
   return {
@@ -245,6 +255,7 @@ function buildCoreLanes(ctx: RuntimeContext, agyInstalled: boolean) {
     "gemini-api": geminiLane(ctx),
     atlascloud: atlasCloudLane(ctx),
     minimax: minimaxLane(ctx),
+    novelai: novelAiLane(ctx),
   };
 }
 

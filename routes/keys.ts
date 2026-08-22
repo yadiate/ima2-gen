@@ -33,7 +33,7 @@ async function updateConfigFile(
   });
 }
 
-type KeyProvider = "openai" | "xai" | "gemini" | "atlascloud" | "minimax";
+type KeyProvider = "openai" | "xai" | "gemini" | "atlascloud" | "minimax" | "novelai";
 
 const KEY_PREFIX_MAP: Record<KeyProvider, string[]> = {
   openai: ["sk-"],
@@ -41,6 +41,7 @@ const KEY_PREFIX_MAP: Record<KeyProvider, string[]> = {
   gemini: ["AI"],
   atlascloud: ["apikey-"],
   minimax: [],
+  novelai: [],
 };
 
 const VALIDATE_URL_MAP: Record<KeyProvider, string> = {
@@ -51,6 +52,7 @@ const VALIDATE_URL_MAP: Record<KeyProvider, string> = {
   // Fallback only. The MiniMax branch resolves a region-aware URL at call time
   // via resolveMinimaxValidateUrl so a cn_zh workspace validates against the CN host.
   minimax: "https://api.minimax.io/v1/models",
+  novelai: "https://api.novelai.net/user/subscription",
 };
 
 // Same region rule as lib/minimaxImageAdapter.ts resolveBaseUrl.
@@ -75,10 +77,11 @@ const CONFIG_KEY_MAP: Record<KeyProvider, string> = {
   gemini: "geminiApiKey",
   atlascloud: "atlasCloudApiKey",
   minimax: "minimaxApiKey",
+  novelai: "novelAiApiKey",
 };
 
 function isKeyProvider(v: string): v is KeyProvider {
-  return v === "openai" || v === "xai" || v === "gemini" || v === "atlascloud" || v === "minimax";
+  return v === "openai" || v === "xai" || v === "gemini" || v === "atlascloud" || v === "minimax" || v === "novelai";
 }
 
 function maskKey(key: string): string {
@@ -92,13 +95,14 @@ function keySourceForProvider(ctx: RuntimeContext, provider: KeyProvider): { key
   if (provider === "gemini") return { key: ctx.geminiApiKey, source: ctx.geminiApiKeySource || "none" };
   if (provider === "atlascloud") return { key: ctx.atlasCloudApiKey, source: ctx.atlasCloudApiKeySource || "none" };
   if (provider === "minimax") return { key: ctx.minimaxApiKey, source: ctx.minimaxApiKeySource || "none" };
+  if (provider === "novelai") return { key: ctx.novelAiApiKey, source: ctx.novelAiApiKeySource || "none" };
   return { key: undefined, source: "none" };
 }
 
 export function mountKeyRoutes(app: Express, ctx: RuntimeContext) {
   app.get("/api/keys/status", (_req: Request, res: Response) => {
     const status: Record<string, unknown> = {};
-    for (const provider of ["openai", "xai", "gemini", "atlascloud", "minimax"] as const) {
+    for (const provider of ["openai", "xai", "gemini", "atlascloud", "minimax", "novelai"] as const) {
       const { key, source } = keySourceForProvider(ctx, provider);
       status[provider] = {
         configured: !!key,
@@ -231,7 +235,13 @@ export function mountKeyRoutes(app: Express, ctx: RuntimeContext) {
     try {
       const url = VALIDATE_URL_MAP[provider];
       const opts: RequestInit = { signal: AbortSignal.timeout(10_000) };
-      if (provider === "gemini") {
+      if (provider === "novelai") {
+        // A freshly issued Persistent API Token is accepted locally. NovelAI's
+        // account endpoints do not provide a stable, generation-equivalent
+        // validation probe for third-party clients, so rejecting here can mark
+        // a valid token red before any image request is made. Authentication is
+        // checked by the real image-generation request instead.
+      } else if (provider === "gemini") {
         opts.headers = { "x-goog-api-key": trimmed };
         const validateRes = await fetch(url, opts);
         if (!validateRes.ok) throw new Error(`HTTP ${validateRes.status}`);
@@ -303,6 +313,10 @@ export function mountKeyRoutes(app: Express, ctx: RuntimeContext) {
       (ctx as any).minimaxApiKey = trimmed;
       (ctx as any).minimaxApiKeySource = "config";
       (ctx as any).hasMinimaxApiKey = true;
+    } else if (provider === "novelai") {
+      (ctx as any).novelAiApiKey = trimmed;
+      (ctx as any).novelAiApiKeySource = "config";
+      (ctx as any).hasNovelAiApiKey = true;
     }
 
     return res.json({ ok: true, provider, source: "config", valid: true });
@@ -344,6 +358,10 @@ export function mountKeyRoutes(app: Express, ctx: RuntimeContext) {
       (ctx as any).minimaxApiKey = undefined;
       (ctx as any).minimaxApiKeySource = "none";
       (ctx as any).hasMinimaxApiKey = false;
+    } else if (provider === "novelai") {
+      (ctx as any).novelAiApiKey = undefined;
+      (ctx as any).novelAiApiKeySource = "none";
+      (ctx as any).hasNovelAiApiKey = false;
     }
 
     return res.json({ ok: true, provider, removed: true });
