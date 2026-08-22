@@ -3,6 +3,7 @@
 import type { RuntimeContext } from "./runtimeContext.js";
 import { detectImageMimeFromB64 } from "./refs.js";
 import { logEvent } from "./logger.js";
+import { translateNovelAiPromptWithGrok } from "./novelAiPromptTranslator.js";
 
 export const NOVELAI_DEFAULT_IMAGE_MODEL = "nai-diffusion-4-5-full";
 const NOVELAI_GENERATE_URL = "https://image.novelai.net/ai/generate-image";
@@ -18,7 +19,7 @@ type NovelAiGenerateOptions = {
 
 type NovelAiImageResult = {
   b64: string;
-  revisedPrompt: null;
+  revisedPrompt: string;
   usage: null;
   webSearchCalls: number;
   mime: string;
@@ -64,9 +65,14 @@ export async function generateViaNovelAi(
   const model = options.model || NOVELAI_DEFAULT_IMAGE_MODEL;
   const { width, height } = resolveSize(options.size);
   const negativePrompt = DEFAULT_NEGATIVE_PROMPT;
+  const translated = await translateNovelAiPromptWithGrok(prompt, ctx, {
+    ...(options.signal ? { signal: options.signal } : {}),
+    ...(options.requestId ? { requestId: options.requestId } : {}),
+  });
+  const translatedPrompt = translated.prompt;
   const requestBody = {
     action: "generate",
-    input: prompt,
+    input: translatedPrompt,
     model,
     parameters: {
       params_version: 3,
@@ -83,7 +89,7 @@ export async function generateViaNovelAi(
       cfg_rescale: 0,
       noise_schedule: "karras",
       v4_prompt: {
-        caption: { base_caption: prompt, char_captions: [] },
+        caption: { base_caption: translatedPrompt, char_captions: [] },
         use_coords: false,
         use_order: true,
       },
@@ -94,7 +100,14 @@ export async function generateViaNovelAi(
     },
   };
 
-  logEvent("novelai", "generate:start", { requestId: options.requestId, model, width, height });
+  logEvent("novelai", "generate:start", {
+    requestId: options.requestId,
+    model,
+    translator: "grok",
+    translatorModel: translated.model,
+    width,
+    height,
+  });
   try {
     const response = await fetch(NOVELAI_GENERATE_URL, {
       method: "POST",
@@ -128,7 +141,7 @@ export async function generateViaNovelAi(
       throw novelAiError("NovelAI returned invalid image bytes", 502, "NOVELAI_IMAGE_INVALID");
     }
     logEvent("novelai", "generate:done", { requestId: options.requestId, model, width, height });
-    return { b64, revisedPrompt: null, usage: null, webSearchCalls: 0, mime, effectiveModel: model };
+    return { b64, revisedPrompt: translatedPrompt, usage: null, webSearchCalls: 0, mime, effectiveModel: model };
   } catch (cause) {
     if ((cause as { code?: string }).code?.startsWith("NOVELAI_")) throw cause;
     if ((cause as { name?: string }).name === "AbortError" || (cause as { name?: string }).name === "TimeoutError") {
