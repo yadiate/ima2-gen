@@ -729,7 +729,7 @@
     "geminiApiCompatTitle": "Gemini API",
     "geminiApiCompatBody": "Google Gemini API. 512px부터 4K까지 종횡비와 해상도를 조절할 수 있습니다.",
     "geminiApiCompatBodyLong": "Google Gemini API 직접 호출. nano-banana-2(Flash), nano-banana-pro(Pro)를 지원하며 512px부터 4K까지 종횡비와 해상도를 조절할 수 있습니다.",
-    "novelAiCompatTitle": "NovelAI Diffusion V4.5",
+    "novelAiCompatTitle": "NovelAI Diffusion V5 / V4.5",
     "novelAiCompatBody": "Grok이 모든 프롬프트 필드를 영어 태그로 변환한 뒤 NovelAI로 전송합니다. Undesired Content, 캐릭터, 샘플링, 시드 및 참조 모드를 지원합니다.",
     "gptCompatTitle": "GPT Image",
     "gptCompatBody": "OpenAI Responses API를 통한 이미지 생성. 품질, 크기, 형식, 모더레이션, 웹 검색 설정 지원."
@@ -1348,6 +1348,7 @@
       "atlasCloudGptImage2Edit": "Atlas Cloud GPT Image 2 Edit",
       "minimaxImage01": "MiniMax image-01",
       "minimaxImage01Live": "MiniMax image-01-live",
+      "novelAi5Full": "NovelAI Diffusion V5 Full",
       "novelAi45Full": "NovelAI Diffusion V4.5 Full",
       "agy": "Antigravity (agy)",
       "gpt53CodexSpark": "GPT-5.3 Codex Spark — 이미지 생성 미지원",

@@ -95,6 +95,7 @@ export const PROVIDER_MODELS = {
   },
   "novelai": {
     "image": [
+      "nai-diffusion-5-full",
       "nai-diffusion-4-5-full"
     ],
     "video": []
@@ -116,6 +117,7 @@ export const IMAGE_MODEL_IDS = [
   "openai/gpt-image-2/edit",
   "image-01",
   "image-01-live",
+  "nai-diffusion-5-full",
   "nai-diffusion-4-5-full"
 ] as const;
 export type ImageModelId = typeof IMAGE_MODEL_IDS[number];

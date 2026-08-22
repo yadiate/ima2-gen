@@ -26,6 +26,7 @@ export const IMAGE_MODEL_OPTIONS: Array<{
   { value: "openai/gpt-image-2/edit", shortLabel: "atlas edit", fullLabelKey: "settings.imageModel.atlasCloudGptImage2Edit", providerHint: "atlascloud" },
   { value: "image-01", shortLabel: "minimax", fullLabelKey: "settings.imageModel.minimaxImage01", providerHint: "minimax" },
   { value: "image-01-live", shortLabel: "minimax live", fullLabelKey: "settings.imageModel.minimaxImage01Live", providerHint: "minimax" },
+  { value: "nai-diffusion-5-full", shortLabel: "NAI 5", fullLabelKey: "settings.imageModel.novelAi5Full", providerHint: "novelai" },
   { value: "nai-diffusion-4-5-full", shortLabel: "NAI 4.5", fullLabelKey: "settings.imageModel.novelAi45Full", providerHint: "novelai" },
 ];
 

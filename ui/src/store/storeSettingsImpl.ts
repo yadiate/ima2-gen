@@ -381,7 +381,7 @@ export function setProviderImpl(provider: Provider, set: StoreSet, get: StoreGet
     saveImageModel(minimaxModel);
     set({ provider, imageModel: minimaxModel });
   } else if (provider === "novelai" && !isNovelAiImageModel(currentModel)) {
-    const novelAiModel = "nai-diffusion-4-5-full";
+    const novelAiModel = "nai-diffusion-5-full";
     saveImageModel(novelAiModel);
     set({ provider, imageModel: novelAiModel });
   } else if (provider !== "grok" && provider !== "grok-api" && provider !== "agy" && provider !== "gemini-api" && provider !== "atlascloud" && provider !== "minimax" && provider !== "novelai" && (isGrokImageModel(currentModel) || isGeminiImageModel(currentModel) || isAtlasCloudImageModel(currentModel) || isMinimaxImageModel(currentModel) || isNovelAiImageModel(currentModel))) {

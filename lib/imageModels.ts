@@ -29,7 +29,7 @@ const ATLASCLOUD_FALLBACK_IMAGE_MODEL = "openai/gpt-image-2/text-to-image";
 const VALID_ATLASCLOUD_IMAGE_MODELS = deriveModels("atlascloud", "image");
 const MINIMAX_FALLBACK_IMAGE_MODEL = "image-01";
 const VALID_MINIMAX_IMAGE_MODELS = deriveModels("minimax", "image");
-const NOVELAI_FALLBACK_IMAGE_MODEL = "nai-diffusion-4-5-full";
+const NOVELAI_FALLBACK_IMAGE_MODEL = "nai-diffusion-5-full";
 const VALID_NOVELAI_IMAGE_MODELS = deriveModels("novelai", "image");
 
 export function normalizeReasoningEffort(ctx: RouteRuntimeContext | null | undefined, rawEffort: unknown) {

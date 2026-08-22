@@ -190,6 +190,7 @@ export const REGISTRY = [
       configKey: "novelAiApiKey",
     }],
     models: [
+      { id: "nai-diffusion-5-full", kind: "image", supports: GENERATE_ONLY },
       { id: "nai-diffusion-4-5-full", kind: "image", supports: GENERATE_ONLY },
     ],
     referenceLimits: { image: 16, edit: 0 },

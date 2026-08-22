@@ -10,7 +10,7 @@ import {
   normalizeNovelAiOptions,
 } from "./novelAiOptions.js";
 
-export const NOVELAI_DEFAULT_IMAGE_MODEL = "nai-diffusion-4-5-full";
+export const NOVELAI_DEFAULT_IMAGE_MODEL = "nai-diffusion-5-full";
 const NOVELAI_GENERATE_URL = "https://image.novelai.net/ai/generate-image";
 
 type NovelAiGenerateOptions = {
@@ -98,6 +98,10 @@ export async function generateViaNovelAi(
     throw novelAiError(`NovelAI ${settings.referenceMode} accepts up to ${referenceLimit} reference images`, 400, "NOVELAI_REFERENCES_TOO_MANY");
   }
   const model = options.model || NOVELAI_DEFAULT_IMAGE_MODEL;
+  const isV5 = model === "nai-diffusion-5-full";
+  if (isV5 && references.length > 0 && settings.referenceMode !== "img2img") {
+    throw novelAiError("NovelAI Diffusion V5 currently supports Image2Image, but not Vibe Transfer or Precise Reference", 400, "NOVELAI_V5_REFERENCE_UNSUPPORTED");
+  }
   const { width, height } = resolveSize(options.size);
   const translated = await translateNovelAiPromptWithGrok(prompt, ctx, {
     ...(options.signal ? { signal: options.signal } : {}),
@@ -128,7 +132,7 @@ export async function generateViaNovelAi(
     input: translatedPrompt,
     model,
     parameters: {
-      params_version: 3,
+      params_version: isV5 ? 4 : 3,
       width,
       height,
       scale: settings.scale,

@@ -32,7 +32,9 @@ export function NovelAiControls() {
   const { t } = useI18n();
   const options = useAppStore((state) => state.novelAiOptions);
   const setOptions = useAppStore((state) => state.setNovelAiOptions);
+  const imageModel = useAppStore((state) => state.imageModel);
   const referenceCount = useAppStore((state) => state.referenceImages.length);
+  const isV5 = imageModel === "nai-diffusion-5-full";
   const [promptTab, setPromptTab] = useState<"prompt" | "negative">("negative");
 
   const patchCharacter = (index: number, patch: Partial<NovelAiCharacterPrompt>) => {
@@ -101,10 +103,10 @@ export function NovelAiControls() {
           <select value={options.referenceMode} onChange={(event) => select("referenceMode", event.target.value as NovelAiGenerationOptions["referenceMode"])}>
             <option value="none">{t("novelai.reference.none")}</option>
             <option value="img2img">{t("novelai.reference.img2img")}</option>
-            <option value="vibe">{t("novelai.reference.vibe")}</option>
-            <option value="precise-character">{t("novelai.reference.preciseCharacter")}</option>
-            <option value="precise-style">{t("novelai.reference.preciseStyle")}</option>
-            <option value="precise-character-style">{t("novelai.reference.preciseBoth")}</option>
+            <option value="vibe" disabled={isV5}>{t("novelai.reference.vibe")}</option>
+            <option value="precise-character" disabled={isV5}>{t("novelai.reference.preciseCharacter")}</option>
+            <option value="precise-style" disabled={isV5}>{t("novelai.reference.preciseStyle")}</option>
+            <option value="precise-character-style" disabled={isV5}>{t("novelai.reference.preciseBoth")}</option>
           </select>
         </label>
         {options.referenceMode === "img2img" ? <>

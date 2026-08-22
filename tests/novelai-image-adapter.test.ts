@@ -35,7 +35,8 @@ test("NovelAI adapter sends a Persistent API Token and parses JSON image output"
     assert.equal((captured[1].init?.headers as Record<string, string>).Authorization, "Bearer persistent-token");
     assert.equal((captured[1].init?.headers as Record<string, string>).Accept, "application/json");
     const body = JSON.parse(String(captured[1].init?.body));
-    assert.equal(body.model, "nai-diffusion-4-5-full");
+    assert.equal(body.model, "nai-diffusion-5-full");
+    assert.equal(body.parameters.params_version, 4);
     assert.equal(body.parameters.width, 1024);
     assert.equal(body.parameters.height, 768);
     assert.equal(body.input, "1girl, blue hair, looking at viewer");
@@ -99,6 +100,7 @@ test("NovelAI adapter forwards negative, character, sampling, and reference opti
   try {
     const ctx = requireRuntimeContext({ novelAiApiKey: "persistent-token" });
     await generateViaNovelAi("밤 도시의 두 소녀", ctx, {
+      model: "nai-diffusion-4-5-full",
       references: [{ b64: "reference-b64" }],
       novelAiOptions: {
         negativePrompt: "비",

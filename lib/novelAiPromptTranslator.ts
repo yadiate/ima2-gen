@@ -4,7 +4,7 @@ import { grokFetchWithRetry } from "./grokUpstreamRetry.js";
 import { logEvent } from "./logger.js";
 import type { NovelAiCharacterPrompt } from "./novelAiOptions.js";
 
-const NOVELAI_TRANSLATOR_PROMPT = `Translate all supplied image-prompt fields into English for NovelAI Diffusion V4.5.
+const NOVELAI_TRANSLATOR_PROMPT = `Translate all supplied image-prompt fields into English for NovelAI Diffusion V5 or V4.5.
 Preserve every requested subject, action, relationship, visual detail, proper name, and literal text to render.
 Keep existing English tags when useful. Use concise comma-separated NovelAI tags where natural.
 The negativePrompt fields describe content to avoid; preserve that negative meaning.

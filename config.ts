@@ -364,7 +364,7 @@ export const config = {
     generationTimeoutMs: pickInt(env.IMA2_MINIMAX_GENERATION_TIMEOUT_MS, fileCfg.minimaxProvider?.generationTimeoutMs, 120_000),
   },
   novelAiProvider: {
-    defaultImageModel: pickStr(env.IMA2_NOVELAI_IMAGE_MODEL_DEFAULT, fileCfg.novelAiProvider?.defaultImageModel, "nai-diffusion-4-5-full"),
+    defaultImageModel: pickStr(env.IMA2_NOVELAI_IMAGE_MODEL_DEFAULT, fileCfg.novelAiProvider?.defaultImageModel, "nai-diffusion-5-full"),
     generationTimeoutMs: pickInt(env.IMA2_NOVELAI_GENERATION_TIMEOUT_MS, fileCfg.novelAiProvider?.generationTimeoutMs, 180_000),
   },
   log: {

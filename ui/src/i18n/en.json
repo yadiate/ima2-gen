@@ -729,7 +729,7 @@
     "geminiApiCompatTitle": "Gemini API",
     "geminiApiCompatBody": "Google Gemini API. Supports aspect ratio and resolution control from 512px to 4K.",
     "geminiApiCompatBodyLong": "Google Gemini API direct. Supports nano-banana-2 (Flash) and nano-banana-pro (Pro), with aspect ratio and resolution control from 512px to 4K.",
-    "novelAiCompatTitle": "NovelAI Diffusion V4.5",
+    "novelAiCompatTitle": "NovelAI Diffusion V5 / V4.5",
     "novelAiCompatBody": "Grok translates every prompt field into English tags before sending it to NovelAI. Supports Undesired Content, characters, sampling, seeds, and reference modes.",
     "gptCompatTitle": "GPT Image",
     "gptCompatBody": "OpenAI image generation via Responses API. Supports quality, size, format, moderation, and web search settings."
@@ -1348,6 +1348,7 @@
       "atlasCloudGptImage2Edit": "Atlas Cloud GPT Image 2 Edit",
       "minimaxImage01": "MiniMax image-01",
       "minimaxImage01Live": "MiniMax image-01-live",
+      "novelAi5Full": "NovelAI Diffusion V5 Full",
       "novelAi45Full": "NovelAI Diffusion V4.5 Full",
       "agy": "Antigravity (agy)",
       "gpt53CodexSpark": "GPT-5.3 Codex Spark — unsupported for images",

@@ -15,7 +15,7 @@ const CLI_IMAGE_MODELS = [
   ...OPENAI_MODELS,
   "gpt-5.3-codex-spark",
   "grok-imagine-image-2.0", "grok-imagine-image", "grok-imagine-image-quality",
-  "nano-banana-2", "nano-banana-pro", "image-01", "image-01-live", "nai-diffusion-4-5-full",
+  "nano-banana-2", "nano-banana-pro", "image-01", "image-01-live", "nai-diffusion-5-full", "nai-diffusion-4-5-full",
 ];
 
 function provider(id: string) {
@@ -44,7 +44,7 @@ describe("core provider registry parity", () => {
       "openai/gpt-image-2/text-to-image", "openai/gpt-image-2/edit",
     ]);
     assert.deepEqual(models("minimax", "image"), ["image-01", "image-01-live"]);
-    assert.deepEqual(models("novelai", "image"), ["nai-diffusion-4-5-full"]);
+    assert.deepEqual(models("novelai", "image"), ["nai-diffusion-5-full", "nai-diffusion-4-5-full"]);
     const cliModels = [...new Set(REGISTRY.flatMap((entry) => models(entry.id, "image")))].filter((id) => !id.includes("/"));
     assert.deepEqual(cliModels, CLI_IMAGE_MODELS);
     assert.deepEqual([...config.imageModels.valid], OPENAI_MODELS);
