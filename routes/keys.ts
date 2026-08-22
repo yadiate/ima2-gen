@@ -235,7 +235,13 @@ export function mountKeyRoutes(app: Express, ctx: RuntimeContext) {
     try {
       const url = VALIDATE_URL_MAP[provider];
       const opts: RequestInit = { signal: AbortSignal.timeout(10_000) };
-      if (provider === "gemini") {
+      if (provider === "novelai") {
+        // A freshly issued Persistent API Token is accepted locally. NovelAI's
+        // account endpoints do not provide a stable, generation-equivalent
+        // validation probe for third-party clients, so rejecting here can mark
+        // a valid token red before any image request is made. Authentication is
+        // checked by the real image-generation request instead.
+      } else if (provider === "gemini") {
         opts.headers = { "x-goog-api-key": trimmed };
         const validateRes = await fetch(url, opts);
         if (!validateRes.ok) throw new Error(`HTTP ${validateRes.status}`);
