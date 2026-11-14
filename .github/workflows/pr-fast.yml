@@ -4,8 +4,7 @@ permissions:
   contents: read
 
 on:
-  pull_request:
-    branches: [main, dev]
+  workflow_dispatch:
 
 concurrency:
   group: pr-fast-${{ github.event.pull_request.number }}
