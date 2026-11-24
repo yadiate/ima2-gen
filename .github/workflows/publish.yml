@@ -1,9 +1,6 @@
 name: Publish to npm
 
 on:
-  push:
-    branches: [preview]
-    tags: ['v*']
   # release.yml re-triggers this after its own pushes. A GITHUB_TOKEN push emits no push
   # event, so without a dispatch path a CI-minted tag would strand an unpublished version
   # (the exact state the old release.sh warned about). The ref is still classified by
